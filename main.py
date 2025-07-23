@@ -125,7 +125,7 @@ class HumanServicePlugin(Star):
                 platform = self.context.get_platform(filter.PlatformAdapterType.AIOCQHTTP)
                 await platform.get_client().send_private_msg(
                     user_id=int(servicer_id),
-                    message=f"用户{user_id}的转人工请求即将超时，可回复此消息接入"
+                    message=f"用户({user_id})的转人工请求即将超时，可回复此消息接入"
                 )
             except Exception as e:
                 logger.error(f"私聊通知失败: {e}")
