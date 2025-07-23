@@ -3,5 +3,22 @@
         "description": "客服QQ",
         "type": "list",
         "hint": "若不填则默认从全局配置中加载管理员作为客服"
+    },
+    "customer_group": {
+        "description": "客服群",
+        "type": "list",
+        "hint": "所有转人工请求将转发到这几个群"
+    },
+    "response_timeout": {
+        "description": "群聊无应答超时（秒）",
+        "type": "int",
+        "default": 30,
+        "hint": "群聊m秒内无人响应即转私聊通知客服"
+    },
+    "total_timeout": {
+        "description": "总无应答超时（秒）",
+        "type": "int",
+        "default": 300,
+        "hint": "n秒内仍无客服接入则自动结束并回复用户"
     }
 }
