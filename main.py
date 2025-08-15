@@ -1270,26 +1270,32 @@ class HumanServicePlugin(Star):
         if not is_transfer:
             self._update_servicer_status(sender_id)
             if self.servicer_config[sender_id]["status"] == "busy":
-
+                logger.error(f"接通失败，因为sender_id为busy")
                 yield event.plain_result("[客服插件]\n接通失败。")
 
                 return
 
         if not is_transfer:
-            if reply_seg := next(
+            reply_seg = next(
                 (seg for seg in event.get_messages() if isinstance(seg, Reply)), None
-            ):
-                if text := reply_seg.message_str:
-                    matches = re.findall(r"\((\d+)\)", text)
-                    if matches:
-                        target_id = matches[-1]
+            )
+            if reply_seg:
+                text = reply_seg.message_str 
+                if text:
+             
+                    user_id_match = re.search(r"[^(]*\((\d+)\)在", text)
+                    if user_id_match:
+                        target_id = user_id_match.group(1) 
+                    else:
+                        logger.warning(f"Reply 文本中未找到用户ID：'{text}'")
+                else:
+                    logger.warning(f"Reply 消息段的 message_str 为空")
         if not target_id or (
             not is_transfer and str(target_id) not in self.pending_requests
         ):
             if not is_transfer:
-
+                logger.error(f"接通失败。无法确定 target_id 或 target_id 不在 pending_requests 中。target_id={target_id}, pending_requests keys={list(self.pending_requests.keys())}")
                 yield event.plain_result(f"[客服插件]\n接通失败。")
-
                 return
 
         if not is_transfer:
@@ -1297,7 +1303,6 @@ class HumanServicePlugin(Star):
                 self.waiting_queue.remove(str(target_id))
             request_info_from_pending = self.pending_requests.pop(str(target_id), None)
             if not request_info_from_pending and not is_transfer:
-
                 yield event.plain_result(f"[客服插件]\n接通失败。")
 
                 return
