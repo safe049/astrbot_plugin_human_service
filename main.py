@@ -443,11 +443,10 @@ class HumanServicePlugin(Star):
     async def notify_customer_group(
         self, user_name: str, user_id: str, src_group: str, is_private: bool = False
     ):
-        
+        platform = self.context.get_platform(filter.PlatformAdapterType.AIOCQHTTP)
         if is_private:
             msg = f"[客服插件]\n{user_name}({user_id})在私聊中请求转人工"
         else:
-            platform = self.context.get_platform(filter.PlatformAdapterType.AIOCQHTTP)
             client = platform.get_client()
             try:
                 group_info = await client.get_group_info(group_id=int(src_group))
